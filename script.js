@@ -36,7 +36,7 @@ function nextCarouselItem() {
   showCarouselItem(currentIndex);
 }
 
-setInterval(nextCarouselItem, 5000);
+setInterval(nextCarouselItem, 3000);
 
 window.onload = () => {
   showCarouselItem(currentIndex);

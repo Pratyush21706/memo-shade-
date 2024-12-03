@@ -4,18 +4,20 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Monitoring App</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="style.css">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css">
-
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 </head>
 <body>
-  <div class="container">
-    <div class="memo-shade">
-      <h1>Memo Shade Jhajha</h1>
+  <nav class="navbar navbar-dark ">
+    <div class="container-fluid">
+      <span class="navbar-brand mb-0 h1 mx-auto">Memu Shed Jhajha</span>
     </div>
+  </nav>
+  <div class="container">
+    
     <h2 id="greeting">Good Afternoon</h2>
     <div class="banner">
         <div class="carousel">
@@ -35,19 +37,32 @@
     <h3>What Would You Like To Do</h3>
 
       <a href="page1.html" class="option-btn">
-        <i class="fas fa-upload"></i>
+        <i class="fa fa-upload"></i>
         Upload Daily Data
       </a>
+      <a href="page2.html" class="option-btn">
+        <i class="fa fa-download"></i>
+                Download Daily Data
+      </a>
       <button class="option-btn">
-        <i class="fas fa-download"></i>
-        Download Daily Data
-      </button>
-      <button class="option-btn">
-        <i class="fas fa-file-download"></i>
+        <i class="fa fa-file-download"></i>
         Download Monthly Report
       </button>
     </div>
   </div>
   <script src="script.js"></script>
+  <style>
+    .navbar {
+      font-family: 'Roboto', sans-serif; /* Use Roboto font */
+      font-weight: bold;                /* Make the text bold */
+      border-bottom-left-radius: 10px;  /* Rounded bottom-left corner */
+      border-bottom-right-radius: 10px; /* Rounded bottom-right corner */
+    padding-bottom: 20px;
+    padding-top: 20px;
+    background-color: #003f69;
+    color: rgb(180, 180, 0);
+    margin-left: 2px;
+    }
+  </style>
 </body>
 </html>

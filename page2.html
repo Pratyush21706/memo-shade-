@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>View Data</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="style2.css">
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@700&display=swap" rel="stylesheet">
+  <script src="https://www.gstatic.com/firebasejs/9.21.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.21.0/firebase-database-compat.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.4.0/jspdf.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.25/jspdf.plugin.autotable.min.js"></script>
+
+</head>
+<body>
+    <nav class="navbar navbar-dark ">
+        <div class="container-fluid">
+          <span class="navbar-brand mb-0 h1 mx-auto">Memu Shed Jhajha</span>
+        </div>
+      </nav>
+  <div class="container">
+    <h1>Download Report</h1>
+    <label for="datePicker">Select a Date:</label>
+    <input type="date" id="datePicker" />
+    <button id="fetchDataBtn">Fetch Data</button>
+  </div>
+    <div id="tablesContainer" class="hidden" >
+      <center><h2 class="text-heading-table">12 Coaches Data</h2></center>
+      <br>
+      <table id="table12" class="table table-striped table-hover align-middle text-center">
+        <thead>
+          <tr>
+            <th>Coach No.</th>
+            <th>MC/TC NO</th>
+            <th>Brake Ringing</th>
+            <th>Blue Coat</th>
+            <th>Dash Pot</th>
+            <th>Fan</th>
+            <th>Tubelight</th>
+            <th>Switch</th>
+            <th>Blowing</th>
+            <th>Seat</th>
+            <th>Insulator</th>
+            <th>Draining</th>
+            <th>Battery</th>
+
+          </tr>
+        </thead>
+        <tbody></tbody>
+      </table>
+
+      <h2>16 Coaches Data</h2>
+      <table id="table16" class="table table-striped table-hover align-middle text-center">
+        <thead>
+          <tr>
+            <th>Coach No.</th>
+            <th>MC/TC NO</th>
+            <th>Brake Ringing</th>
+            <th>Blue Coat</th>
+            <th>Dash Pot</th>
+            <th>Fan</th>
+            <th>Tubelight</th>
+            <th>Switch</th>
+            <th>Blowing</th>
+            <th>Seat</th>
+            <th>Insulator</th>
+            <th>Draining</th>
+            <th>Battery</th>
+
+          </tr>
+        </thead>
+        <tbody></tbody>
+      </table>
+      <div class="d-flex justify-content-end my-3">
+        <button id="generatePDF" class="btn btn-primary">Download  PDF</button>
+      </div>
+    </div>
+    <div id="noDataMessage" class="hidden">
+      <p>No data found for the selected date.</p>
+    </div>
+  </div>
+  <script type="module" src="script2.js"></script>
+  <style>
+    .navbar {
+      font-family: 'Roboto', sans-serif; /* Use Roboto font */
+      font-weight: bold;                /* Make the text bold */
+      border-bottom-left-radius: 10px;  /* Rounded bottom-left corner */
+      border-bottom-right-radius: 10px; /* Rounded bottom-right corner */
+    padding-bottom: 20px;
+    padding-top: 20px;
+    background-color: #003f69;
+    color: rgb(180, 180, 0);
+    margin-left: 2px;
+    }
+  </style>
+  
+  <script>
+    document.getElementById('generatePDF').addEventListener('click', function () {
+        const { jsPDF } = window.jspdf;
+      
+        // Create a new jsPDF instance in landscape mode
+        const doc = new jsPDF({ orientation: 'landscape' });
+      
+        // Function to add a table to the PDF
+        const addTableToPDF = (doc, tableId, startY, pageTitle) => {
+          // Add a title to each page
+          doc.setFontSize(18);
+          doc.text(pageTitle, 14, 15);
+      
+          // Extract the table
+          const table = document.querySelector(tableId);
+      
+          // Use autoTable to add the table to the PDF
+          doc.autoTable({
+            html: table,
+            startY: startY, // Position below the title
+            theme: 'grid', // Use a grid theme for the table
+            styles: {
+              halign: 'center', // Center-align text
+              cellPadding: 3,  // Add padding for better readability
+            },
+            headStyles: {
+              fillColor: [0, 51, 102], // Blue background for header
+              textColor: 255, // White text
+              fontStyle: 'bold',
+            },
+          });
+        };
+      
+        // Add the first table
+        addTableToPDF(doc, '#table12', 30, 'DAILY WORKING REPORT IN MEMU COACHES -  12');
+      
+        // Add a new page for the second table
+        doc.addPage();
+      
+        // Add the second table
+        addTableToPDF(doc, '#table16', 30, 'DAILY WORKING REPORT IN MEMU COACHES -  16');
+      
+        // Save the PDF
+        const today = new Date();
+const formattedDate = today.toDateString();
+console.log(formattedDate); // Output: "Tue Dec 07 2024"
+
+        doc.save(formattedDate +' Working Report.pdf');
+      });
+      
+
+  </script>
+  
+</body>
+</html>

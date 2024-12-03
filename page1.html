@@ -5,84 +5,128 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css">
   <link rel="stylesheet" href="style1.css">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@700&display=swap" rel="stylesheet">
+
+  <!-- Add the Firebase SDK -->
+  <!-- Add the Firebase SDK -->
+<script src="https://www.gstatic.com/firebasejs/9.21.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.21.0/firebase-database-compat.js"></script>
 </head>
 <body>
+  
   <div class="container">
-    <div class="header rounded-0 w-100">Memo Shade Jhajha</div>
+    <nav class="navbar navbar-dark ">
+      <div class="container-fluid">
+        <span class="navbar-brand mb-0 h1 mx-auto">Memu Shed Jhajha</span>
+      </div>
+    </nav>
+    <br>
     <div class="date-section d-flex justify-content-between align-items-center">
-      <p class="mb-0">Today is <span id="dynamic-date"></span></p>
+      <p class="mb-0">Today is <br><span id="dynamic-date"></span></p>
       <div class="emu-type-buttons">
         <button class="emu-type-btn active me-2" data-coaches="12">12 Coaches</button>
         <button class="emu-type-btn me-2" data-coaches="16">16 Coaches</button>
       </div>
     </div>
+    <br>
     <div class="form-section">
-      <p class="mb-3">Enter Details <span id="coach-number">(1/12)</span></p>
+      <h5 class="mb-3">Enter Details <span id="coach-number">(1/12)</span></h5>
+      <br>
       <form class="coach-form row">
         <div class="col-12 mb-3">
           <div class="form-floating">
-            <input type="text" class="form-control" id="a" placeholder="a" />
-            <label for="a">a</label>
+            <input type="number" class="form-control" id="a" placeholder="Coach" />
+            <label for="a">MC/TC Number</label>
+          </div>
+        </div>
+        <div class="col-7 mb-3">
+          <div class="form-floating">
+            <input type="number" class="form-control" id="b" placeholder="b" />
+            <label for="b">Brake Ringing</label>
+          </div>
+        </div>
+        <div class="col-5 mb-3">
+          <div class="form-floating">
+            <input type="number" class="form-control" id="c" placeholder="c" />
+            <label for="c">Blue Coat</label>
+          </div>
+        </div>
+        <div class="col-5 mb-3">
+          <div class="form-floating">
+            <input type="number" class="form-control" id="d" placeholder="d" />
+            <label for="d">Dash Pot</label>
+          </div>
+        </div>
+        <div class="col-7 mb-3">
+          <div class="form-floating">
+            <input type="number" class="form-control" id="e" placeholder="e" />
+            <label for="e">Fan</label>
+          </div>
+        </div>
+        <div class="col-7 mb-3">
+          <div class="form-floating">
+            <input type="number" class="form-control" id="f" placeholder="f" />
+            <label for="f">Tubelight</label>
+          </div>
+        </div>
+        <div class="col-5 mb-3">
+          <div class="form-floating">
+            <input type="number" class="form-control" id="g" placeholder="g" />
+            <label for="g">Switch</label>
           </div>
         </div>
         <div class="col-6 mb-3">
           <div class="form-floating">
-            <input type="text" class="form-control" id="b" placeholder="b" />
-            <label for="b">b</label>
+            <input type="number" class="form-control" id="h" placeholder="h" />
+            <label for="h">Blowing</label>
           </div>
         </div>
         <div class="col-6 mb-3">
           <div class="form-floating">
-            <input type="text" class="form-control" id="c" placeholder="c" />
-            <label for="c">c</label>
+            <input type="number" class="form-control" id="i" placeholder="i" />
+            <label for="i">Seat</label>
           </div>
         </div>
         <div class="col-6 mb-3">
           <div class="form-floating">
-            <input type="text" class="form-control" id="d" placeholder="d" />
-            <label for="d">d</label>
+            <input type="number" class="form-control" id="j" placeholder="j" />
+            <label for="j">Insulator</label>
           </div>
         </div>
         <div class="col-6 mb-3">
           <div class="form-floating">
-            <input type="text" class="form-control" id="e" placeholder="e" />
-            <label for="e">e</label>
+            <input type="number" class="form-control" id="k" placeholder="k" />
+            <label for="k">Draining</label>
           </div>
         </div>
-        <div class="col-6 mb-3">
+        <div class="col-12 mb-3">
           <div class="form-floating">
-            <input type="text" class="form-control" id="f" placeholder="f" />
-            <label for="f">f</label>
-          </div>
-        </div>
-        <div class="col-6 mb-3">
-          <div class="form-floating">
-            <input type="text" class="form-control" id="g" placeholder="g" />
-            <label for="g">g</label>
-          </div>
-        </div>
-        <div class="col-6 mb-3">
-          <div class="form-floating">
-            <input type="text" class="form-control" id="h" placeholder="h" />
-            <label for="h">h</label>
-          </div>
-        </div>
-        <div class="col-6 mb-3">
-          <div class="form-floating">
-            <input type="text" class="form-control" id="i" placeholder="i" />
-            <label for="i">i</label>
-          </div>
-        </div>
-        <div class="col-6 mb-3">
-          <div class="form-floating">
-            <input type="text" class="form-control" id="j" placeholder="j" />
-            <label for="j">j</label>
+            <input type="number" class="form-control" id="l" placeholder="l" />
+            <label for="l">Battery</label>
           </div>
         </div>
       </form>
     </div>
     <button class="next-btn btn btn-primary w-100 rounded-0">Next Coach</button>
+    <div id="firebase-feedback"></div>
   </div>
-  <script src="script1.js"></script>
+  <script type ="module" src="script1.js"></script>
+  <script type="module" src="backend.js"> </script>
+  <style>
+    .navbar {
+      font-family: 'Roboto', sans-serif; /* Use Roboto font */
+      font-weight: bold;                /* Make the text bold */
+      border-bottom-left-radius: 10px;  /* Rounded bottom-left corner */
+      border-bottom-right-radius: 10px; /* Rounded bottom-right corner */
+    padding-bottom: 20px;
+    padding-top: 20px;
+    background-color: #003f69;
+    color: rgb(180, 180, 0);
+    width: 140%;
+    margin-left: -20%;
+    margin-top: -6%;
+    }
+  </style>
 </body>
 </html>
