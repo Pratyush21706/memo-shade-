@@ -45,7 +45,7 @@ function fetchDataForDate(date) {
    }
    console.log(dayx)
    
-   let xyz = `/train-monitoring/${month}-${dayx}-${year}`;
+   let xyz = `/train-monitoring/${dayx}-${month}-${year}`;
    console.log(xyz);
 
   database
