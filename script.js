@@ -11,7 +11,7 @@ function updateGreeting() {
       greeting += "Evening";
     }
   
-    document.getElementById("greeting").textContent = greeting;
+    document.getElementById("greeting").textContent = greeting+",";
     
   }
   

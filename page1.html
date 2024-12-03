@@ -18,12 +18,15 @@
   <div class="container">
     <nav class="navbar navbar-dark ">
       <div class="container-fluid">
-        <span class="navbar-brand mb-0 h1 mx-auto">Memu Shed Jhajha</span>
+        <a class="navbar-brand" href="#">
+          <img src="https://static.cdnlogo.com/logos/i/9/indian-railways.svg" width="90" height="50" alt="">
+        </a>
+        <span class="navbar-brand mb-0  mx-auto" style="margin-left: 200px;">Memu Shed Jhajha</span>
       </div>
     </nav>
-    <br>
+    <br><br><br><br>
     <div class="date-section d-flex justify-content-between align-items-center">
-      <p class="mb-0">Today is <br><span id="dynamic-date"></span></p>
+      <p class="mb-0">Today is <br><span id="dynamic-date" ></span></p>
       <div class="emu-type-buttons">
         <button class="emu-type-btn active me-2" data-coaches="12">12 Coaches</button>
         <button class="emu-type-btn me-2" data-coaches="16">16 Coaches</button>
@@ -124,8 +127,12 @@
     background-color: #003f69;
     color: rgb(180, 180, 0);
     width: 140%;
-    margin-left: -20%;
-    margin-top: -6%;
+  
+    position: fixed;
+    z-index: 1;
+    width: 100%;
+    left: 0;
+    top: 0;
     }
   </style>
 </body>

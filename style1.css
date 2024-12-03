@@ -73,3 +73,8 @@ body {
   .form-floating > .form-control:not(:placeholder-shown) ~ label {
     transform: scale(0.85) translateY(-1rem) translateX(0.15rem);
   }
+
+
+  #dynamic-date{
+    font-weight: bold;
+  }

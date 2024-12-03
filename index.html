@@ -13,12 +13,14 @@
 <body>
   <nav class="navbar navbar-dark ">
     <div class="container-fluid">
-      <span class="navbar-brand mb-0 h1 mx-auto">Memu Shed Jhajha</span>
+      <a class="navbar-brand" href="#">
+        <img src="https://static.cdnlogo.com/logos/i/9/indian-railways.svg" width="90" height="50" alt="">
+      </a>
+      <span class="navbar-brand mb-0  mx-auto" style="margin-left: 200px;">Memu Shed Jhajha</span>
     </div>
   </nav>
   <div class="container">
-    
-    <h2 id="greeting">Good Afternoon</h2>
+    <br><br><br><br>
     <div class="banner">
         <div class="carousel">
           <img src="image1.jpg" alt="Banner Image 1" class="carousel-item" width="100px" height="100px">
@@ -26,29 +28,37 @@
           <img src="image3.jpg" alt="Banner Image 3" class="carousel-item">
           <img src="image4.jpg" alt="Banner Image 4" class="carousel-item">
         </div>
-        <div class="carousel-indicators">
+        <div class="carousel-indicators" style="z-index: 0;">
           <div class="carousel-indicator active"></div>
           <div class="carousel-indicator"></div>
           <div class="carousel-indicator"></div>
           <div class="carousel-indicator"></div>
         </div>
       </div>
-    <div class="options">
-    <h3>What Would You Like To Do</h3>
+    <div class="options row  d-flex justify-content-between align-items-center">
+    <h2 id="greeting" class="col-11">Good Afternoon</h2>
+    <p class="col-11">Welcome to Memo shed Jhajha, In this application You could <b> monitor and track</b> every aspect of coach maintainence done by us, with respect to the given date or for the entire month. You can Upload and View data daily and can also generate Monthly Reports.</p>
 
-      <a href="page1.html" class="option-btn">
+    <h3 class="col-11 mb-3">What Would You Like To Do</h3>
+
+      <a href="page1.html" class="option-btn active col-8 mb-1">
         <i class="fa fa-upload"></i>
         Upload Daily Data
       </a>
-      <a href="page2.html" class="option-btn">
+      <a href="page2.html" class="option-btn col-8 mb-3" >
         <i class="fa fa-download"></i>
                 Download Daily Data
       </a>
-      <button class="option-btn">
-        <i class="fa fa-file-download"></i>
-        Download Monthly Report
-      </button>
+      <a href="page3.html" class="option-btn col-8 mb-3" >
+        <i class="fa fa-file"></i>
+                Download Monthly Report
+      </a>
+      <p class="col-12" style="background-color: #003f69; color:white; padding:20px; padding-left:32%; margin-bottom:-8.2%; border-radius: 15px 15px 0 0;">Thanks for trusting Us</p>
     </div>
+  </div>
+
+  <div class=" row  d-flex  align-items-center" >
+    
   </div>
   <script src="script.js"></script>
   <style>
@@ -61,7 +71,10 @@
     padding-top: 20px;
     background-color: #003f69;
     color: rgb(180, 180, 0);
-    margin-left: 2px;
+    position: fixed;
+    z-index: 1;
+    width: 100%;
+    left: 0;
     }
   </style>
 </body>

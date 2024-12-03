@@ -2,7 +2,9 @@ import { saveCoachDataToFirebase } from './backend.js';
 
 // Get the current date
 const today = new Date();
-const dateString = today.toLocaleDateString().replace(/\//g, '-'); // Format date as "MM-DD-YYYY"
+// const [year, month, day] = date.split("-")
+const dateString = today.toLocaleDateString().replace(/\//g, '-');
+ // Format date as "MM-DD-YYYY"
 document.getElementById('dynamic-date').textContent = dateString;
 
 // DOM elements
