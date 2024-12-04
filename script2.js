@@ -128,8 +128,17 @@ function createTable(trainType, trainData, date) {
 
   deleteBtn = tableDiv.querySelector(".delete-table-btn");  
   deleteBtn.addEventListener("click", () => {
-    if (confirm(`Are you sure you want to delete ${trainType} and all its data?`)) {
-      // Remove from Firebase
+    // Set the train type name in the modal
+    document.getElementById("trainTypeName").textContent = trainType;
+  
+    // Show the modal
+    const deleteModal = new bootstrap.Modal(document.getElementById("deleteConfirmModal"));
+    deleteModal.show();
+  
+    // Handle the confirm delete button click
+    const confirmDeleteBtn = document.getElementById("confirmDeleteBtn");
+    const onConfirmDelete = () => {
+      // Remove data from Firebase
       database
         .ref(`/train-monitoring/${date}/${xyz}`)
         .remove()
@@ -141,9 +150,18 @@ function createTable(trainType, trainData, date) {
         .catch((error) => {
           console.error("Error deleting data:", error);
           alert("Failed to delete data. Please try again.");
+        })
+        .finally(() => {
+          deleteModal.hide(); // Hide the modal after the operation
         });
-    }
+  
+      // Remove the event listener to avoid duplicate bindings
+      confirmDeleteBtn.removeEventListener("click", onConfirmDelete);
+    };
+  
+    confirmDeleteBtn.addEventListener("click", onConfirmDelete);
   });
+  
 
   const tbody = tableDiv.querySelector("tbody");
   const totals = {

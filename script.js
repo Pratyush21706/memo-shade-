@@ -19,6 +19,7 @@ function updateGreeting() {
 const carouselItems = document.querySelectorAll('.carousel-item');
 const carouselIndicators = document.querySelectorAll('.carousel-indicator');
 
+
 let currentIndex = 0;
 
 function showCarouselItem(index) {
