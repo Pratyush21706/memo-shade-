@@ -1,5 +1,5 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.2/firebase-app.js";
-import { getDatabase, ref, set, get, child } from "https://www.gstatic.com/firebasejs/11.0.2/firebase-database.js";
+import { getDatabase, ref, set } from "https://www.gstatic.com/firebasejs/11.0.2/firebase-database.js";
 
 const firebaseConfig = {
   apiKey: "AIzaSyB-Euqpq0HC0IebmfcRmVJz4gTYGlcowYg",
@@ -14,18 +14,11 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const database = getDatabase(app);
 
-export function checkIfDataExists(currentDate, emuType) {
-  const databaseRef = ref(database, `train-monitoring/${currentDate}/${emuType}`);
-  return get(databaseRef).then((snapshot) => {
-    return snapshot.exists();
-  });
-}
-
-export function saveCoachDataToFirebase(coachData, emuTypeWithUsage, currentDate) {
+export function saveCoachDataToFirebase(coachData, emuType, currentDate) {
   const promises = coachData.map((coach) => {
     const coachRef = ref(
       database,
-      `train-monitoring/${currentDate}/${emuTypeWithUsage}/${coach.coach}`
+      `train-monitoring/${currentDate}/${emuType}/${coach.coach}`
     );
     return set(coachRef, coach);
   });

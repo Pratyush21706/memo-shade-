@@ -125,3 +125,17 @@ body {
     color: #fff;
   }
   
+  .shado{
+    width: 100vw;
+    height: 100vh;
+    background-color: #2e2e2e86;
+    position: absolute;
+    top: 0;
+  }
+
+  nav{
+    z-index: 1;
+  }
+  form{
+    z-index: -1;
+  }

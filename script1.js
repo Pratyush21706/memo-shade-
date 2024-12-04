@@ -1,6 +1,5 @@
 // --- script1.js ---
 import { saveCoachDataToFirebase } from './backend.js';
-import { checkIfDataExists } from './backend.js';
 
 // Set default date to today
 const datePicker = document.getElementById("date-picker");
@@ -9,7 +8,6 @@ const formattedDate = today.toISOString().split("T")[0]; // Format as YYYY-MM-DD
 datePicker.value = formattedDate;
 
 let maxCoaches = 12; // Default to 12 coaches
-let customCoachUsage = {}; // Track usage for custom services
 let currentCoach = 1;
 let coachData = [];
 
@@ -35,7 +33,6 @@ const coachForm = document.querySelector('.coach-form');
 const coachInputs = coachForm.querySelectorAll('input');
 const coachNumberSpan = document.getElementById('coach-number');
 const nextBtn = document.querySelector('.next-btn');
-const feedback = document.getElementById('firebase-feedback');
 
 // Add click event listener to EMU type buttons
 emuTypeButtons.forEach((btn) => {
@@ -62,7 +59,6 @@ document.getElementById("custom-coaches-btn").addEventListener("click", () => {
   }
 
   maxCoaches = coachNumber;
-  customCoachUsage[maxCoaches] = (customCoachUsage[maxCoaches] || 0) + 1;
   currentCoach = 1;
   coachData = [];
   updateCoachNumber();
@@ -93,58 +89,48 @@ function saveAndNextCoach() {
   const selectedDate = datePicker.value; // Get selected date from the date picker
   const emuType = document.querySelector(".emu-type-btn.active")
     ? document.querySelector(".emu-type-btn.active").dataset.coaches
-    : "custom"; // Use "custom" for custom coach configurations
+    : `${maxCoaches} - ${generateUniqueId()}`; // Generate unique ID for custom configurations
 
-  const emuTypeWithUsage = customCoachUsage[maxCoaches]
-    ? `${emuType} - ${customCoachUsage[maxCoaches]}`
-    : emuType;
+  const coachDataEntry = {
+    coach: currentCoach,
+    a: document.getElementById("a").value,
+    b: document.getElementById("b").value,
+    c: document.getElementById("c").value,
+    d: document.getElementById("d").value,
+    e: document.getElementById("e").value,
+    f: document.getElementById("f").value,
+    g: document.getElementById("g").value,
+    h: document.getElementById("h").value,
+    i: document.getElementById("i").value,
+    j: document.getElementById("j").value,
+    k: document.getElementById("k").value,
+    l: document.getElementById("l").value,
+  };
 
-  checkIfDataExists(selectedDate, emuTypeWithUsage).then((exists) => {
-    if (exists && currentCoach === 1) {
-      const confirmOverwrite = confirm(
-        "Data already exists for the selected date and EMU type. Do you want to overwrite?"
-      );
-      if (!confirmOverwrite) {
-        return;
-      }
-    }
+  coachData.push(coachDataEntry);
 
-    const coachDataEntry = {
-      coach: currentCoach,
-      a: document.getElementById("a").value,
-      b: document.getElementById("b").value,
-      c: document.getElementById("c").value,
-      d: document.getElementById("d").value,
-      e: document.getElementById("e").value,
-      f: document.getElementById("f").value,
-      g: document.getElementById("g").value,
-      h: document.getElementById("h").value,
-      i: document.getElementById("i").value,
-      j: document.getElementById("j").value,
-      k: document.getElementById("k").value,
-      l: document.getElementById("l").value,
-    };
+  if (currentCoach < maxCoaches) {
+    currentCoach++;
+    updateCoachNumber();
+    clearCoachForm();
+  } else {
+    showUploadAnimation();
+    saveCoachDataToFirebase(coachData, emuType, selectedDate)
+      .then(() => {
+        alert("Data successfully submitted!");
+        hideUploadAnimation();
+        resetFormAfterUpload();
+      })
+      .catch((error) => {
+        alert("Error saving data: " + error.message);
+        hideUploadAnimation();
+      });
+  }
+}
 
-    coachData.push(coachDataEntry);
-
-    if (currentCoach < maxCoaches) {
-      currentCoach++;
-      updateCoachNumber();
-      clearCoachForm();
-    } else {
-      showUploadAnimation();
-      saveCoachDataToFirebase(coachData, emuTypeWithUsage, selectedDate, customCoachUsage)
-        .then(() => {
-          alert("Data successfully submitted!");
-          hideUploadAnimation();
-          resetFormAfterUpload();
-        })
-        .catch((error) => {
-          alert("Error saving data: " + error.message);
-          hideUploadAnimation();
-        });
-    }
-  });
+// Generate a unique ID for custom configurations
+function generateUniqueId() {
+  return Math.random().toString(36).substr(2, 9);
 }
 
 // Reset form after upload
@@ -175,3 +161,46 @@ coachInputs.forEach((input) => {
   });
 });
 
+const nameInput = document.getElementById('nameInput');
+const loginBtn = document.getElementById('loginBtn');
+const departmentButtons = document.querySelectorAll('.btn-group .btn');
+let selectedDepartment = null;
+
+// Function to check if both conditions are met
+function checkConditions() {
+  if (nameInput.value.trim() !== "" && selectedDepartment !== null) {
+    loginBtn.disabled = false;
+  } else {
+    loginBtn.disabled = true;
+  }
+}
+
+// Event listeners for name input
+nameInput.addEventListener('input', checkConditions);
+
+// Event listeners for department buttons
+departmentButtons.forEach(button => {
+  button.addEventListener('click', function() {
+    // Set selected department
+    selectedDepartment = this.id.replace('Btn', ''); // Get the department name from button ID
+    departmentButtons.forEach(btn => btn.classList.remove('active'));
+    this.classList.add('active');
+    checkConditions();
+  });
+});
+
+// Event listener for login button
+loginBtn.addEventListener('click', function() {
+  // Hide the modal
+  const modal = new bootstrap.Modal(document.getElementById('welcomeModal'));
+  modal.hide();
+  console.log(modal)
+  document.getElementById("welcomeModal").style="display:hidden;"
+
+  // Optionally, you can add more logic here (e.g., store data in localStorage, etc.)
+  alert('Logged in as: ' + nameInput.value + ', Department: ' + selectedDepartment);
+});
+
+
+
+// --- backend.js ---

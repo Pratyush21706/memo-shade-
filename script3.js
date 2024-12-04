@@ -22,6 +22,8 @@ const noDataMessage = document.getElementById('noDataMessage');
 const pdfDownloadContainer = document.getElementById('pdfDownloadContainer');
 const downloadPdfBtn = document.getElementById('downloadPdfBtn');
 
+
+
 // Submit Button Event
 submitBtn.addEventListener('click', () => {
     const startDate = startDatePicker.value;
@@ -35,8 +37,26 @@ submitBtn.addEventListener('click', () => {
     fetchData(startDate, endDate);
 });
 
+
+function showSpinner() {
+    const spinner = document.getElementById("spinnerContainer");
+    spinner.style.display = "flex"; // Make spinner visible
+  }
+  
+  // Hide Spinner
+  function hideSpinner() {
+    const spinner = document.getElementById("spinnerContainer");
+    spinner.style="display:none !important" // Hide spinner
+    console.log(spinner)
+
+  }
+  window.onload = () => {
+    hideSpinner();
+  };
+
 // Fetch Data from Firebase
 function fetchData(startDate, endDate) {
+    showSpinner();
     const path = `/train-monitoring`;
     const formattedStartDate = startDate;
     const formattedEndDate = endDate;
@@ -48,6 +68,8 @@ function fetchData(startDate, endDate) {
                 processData(data);
             } else {
                 showNoDataMessage();
+            hideSpinner();
+
             }
         })
         .catch(error => {
@@ -57,6 +79,8 @@ function fetchData(startDate, endDate) {
 
 // Process Data and Populate Table
 function processData(data) {
+    hideSpinner();
+
     const totals = {
         "Brake Ringing": 0,
         "Blue Coat": 0,

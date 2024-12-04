@@ -79,5 +79,12 @@ body {
     font-weight: bold;
   }
   
+  .hidden-date {
+    display: none !important;
 
+  }
+  
+  .chutiya{
+    display: none;
+  }
   
