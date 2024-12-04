@@ -44,4 +44,42 @@ window.onload = () => {
 };
 
 
+const nameInput = document.getElementById('nameInput');
+const loginBtn = document.getElementById('loginBtn');
+const departmentButtons = document.querySelectorAll('.btn-group .btn');
+let selectedDepartment = null;
 
+// Function to check if both conditions are met
+function checkConditions() {
+  if (nameInput.value.trim() !== "" && selectedDepartment !== null) {
+    loginBtn.disabled = false;
+  } else {
+    loginBtn.disabled = true;
+  }
+}
+
+// Event listeners for name input
+nameInput.addEventListener('input', checkConditions);
+
+// Event listeners for department buttons
+departmentButtons.forEach(button => {
+  button.addEventListener('click', function() {
+    // Set selected department
+    selectedDepartment = this.id.replace('Btn', ''); // Get the department name from button ID
+    departmentButtons.forEach(btn => btn.classList.remove('active'));
+    this.classList.add('active');
+    checkConditions();
+  });
+});
+
+// Event listener for login button
+loginBtn.addEventListener('click', function() {
+  // Hide the modal
+  const modal = new bootstrap.Modal(document.getElementById('welcomeModal'));
+  modal.hide();
+  console.log(modal)
+  document.getElementById("welcomeModal").style="display:hidden;"
+
+  // Optionally, you can add more logic here (e.g., store data in localStorage, etc.)
+  alert('Logged in as: ' + nameInput.value + ', Department: ' + selectedDepartment);
+});

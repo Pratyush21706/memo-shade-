@@ -15,6 +15,13 @@
     margin: 0 auto;
     padding: 20px;
   }
+  .shado{
+    width: 100vw;
+    height: 100vh;
+    background-color: #2e2e2e86;
+    position: absolute;
+    top: 0;
+  }
   
   .memo-shade {
     background-color: #0a009c;

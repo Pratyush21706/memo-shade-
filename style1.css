@@ -78,3 +78,50 @@ body {
   #dynamic-date{
     font-weight: bold;
   }
+
+  #upload-animation {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 1000;
+    background-color: rgba(255, 255, 255, 0.9);
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+  }
+  .d-none {
+    display: none !important;
+  }
+
+  
+  .date-section {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    margin-bottom: 10px;
+  }
+  
+  .emu-type-buttons {
+    display: flex;
+    gap: 10px;
+  }
+  
+  .emu-type-btn,
+  .emu-type-btn-custom {
+    flex: 1; /* Ensures buttons are equally sized */
+    padding: 10px 20px;
+    font-size: 16px;
+  }
+  
+  .emu-type-btn-custom {
+    background-color: #ffc107; /* Warning yellow */
+    color: #000;
+    border: none;
+  }
+  
+  .emu-type-btn-custom:hover {
+    background-color: #e0a800;
+    color: #fff;
+  }
+  

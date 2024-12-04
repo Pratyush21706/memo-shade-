@@ -1,11 +1,33 @@
+// --- script1.js ---
 import { saveCoachDataToFirebase } from './backend.js';
+import { checkIfDataExists } from './backend.js';
 
-// Get the current date
+// Set default date to today
+const datePicker = document.getElementById("date-picker");
 const today = new Date();
-// const [year, month, day] = date.split("-")
-const dateString = today.toLocaleDateString().replace(/\//g, '-');
- // Format date as "MM-DD-YYYY"
-document.getElementById('dynamic-date').textContent = dateString;
+const formattedDate = today.toISOString().split("T")[0]; // Format as YYYY-MM-DD
+datePicker.value = formattedDate;
+
+let maxCoaches = 12; // Default to 12 coaches
+let customCoachUsage = {}; // Track usage for custom services
+let currentCoach = 1;
+let coachData = [];
+
+// Listen for changes in date picker
+datePicker.addEventListener("change", () => {
+  const selectedDate = datePicker.value;
+  console.log("Selected Date:", selectedDate);
+});
+
+const uploadAnimation = document.getElementById("upload-animation");
+
+function showUploadAnimation() {
+  uploadAnimation.classList.remove("d-none");
+}
+
+function hideUploadAnimation() {
+  uploadAnimation.classList.add("d-none");
+}
 
 // DOM elements
 const emuTypeButtons = document.querySelectorAll('.emu-type-btn');
@@ -14,10 +36,6 @@ const coachInputs = coachForm.querySelectorAll('input');
 const coachNumberSpan = document.getElementById('coach-number');
 const nextBtn = document.querySelector('.next-btn');
 const feedback = document.getElementById('firebase-feedback');
-
-let currentCoach = 1;
-let maxCoaches = 12;
-let coachData = [];
 
 // Add click event listener to EMU type buttons
 emuTypeButtons.forEach((btn) => {
@@ -33,15 +51,32 @@ emuTypeButtons.forEach((btn) => {
   });
 });
 
+// Event listener for the custom coaches button
+document.getElementById("custom-coaches-btn").addEventListener("click", () => {
+  const customCoachCount = prompt("Enter the number of coaches:");
+  const coachNumber = parseInt(customCoachCount, 10);
+
+  if (isNaN(coachNumber) || coachNumber <= 0) {
+    alert("Please enter a valid positive number.");
+    return;
+  }
+
+  maxCoaches = coachNumber;
+  customCoachUsage[maxCoaches] = (customCoachUsage[maxCoaches] || 0) + 1;
+  currentCoach = 1;
+  coachData = [];
+  updateCoachNumber();
+
+  alert(`Custom configuration set for ${coachNumber} coaches.`);
+});
 
 // Update the coach number display
 function updateCoachNumber() {
   coachNumberSpan.textContent = `(${currentCoach}/${maxCoaches})`;
-  // Change button text to "Submit to Firebase" if on the last coach
   if (currentCoach === maxCoaches) {
     nextBtn.textContent = 'Submit to Database';
   } else {
-    nextBtn.textContent = 'Next Coach'; // Reset button text for other cases
+    nextBtn.textContent = 'Next Coach';
   }
 }
 
@@ -55,73 +90,76 @@ function clearCoachForm() {
 
 // Save the coach data and move to the next coach
 function saveAndNextCoach() {
-  // Collect data from the form
-  const coachDataEntry = {
-    coach: currentCoach,
-    a: document.getElementById('a').value,
-    b: document.getElementById('b').value,
-    c: document.getElementById('c').value,
-    d: document.getElementById('d').value,
-    e: document.getElementById('e').value,
-    f: document.getElementById('f').value,
-    g: document.getElementById('g').value,
-    h: document.getElementById('h').value,
-    i: document.getElementById('i').value,
-    j: document.getElementById('j').value,
-    k: document.getElementById('k').value,
-    l: document.getElementById('l').value,
-  };
+  const selectedDate = datePicker.value; // Get selected date from the date picker
+  const emuType = document.querySelector(".emu-type-btn.active")
+    ? document.querySelector(".emu-type-btn.active").dataset.coaches
+    : "custom"; // Use "custom" for custom coach configurations
 
-  coachData.push(coachDataEntry);
+  const emuTypeWithUsage = customCoachUsage[maxCoaches]
+    ? `${emuType} - ${customCoachUsage[maxCoaches]}`
+    : emuType;
 
-  // Check if it's the last coach
-  if (currentCoach < maxCoaches) {
-    currentCoach++;
-    updateCoachNumber();
-    clearCoachForm();
-  } else {
-    // Submit the data to Firebase
-    const emuType = document.querySelector('.emu-type-btn.active').dataset.coaches;
-    saveCoachDataToFirebase(coachData, emuType, dateString)
-    .then(() => {
-      alert('Data successfully submitted!');
-      // Disable the active button
-      const activeButton = document.querySelector('.emu-type-btn.active');
-      activeButton.disabled = true;
-      activeButton.classList.remove('active');
-  
-      // Automatically select the next button (if available)
-      const nextButton = document.querySelector(
-        `.emu-type-btn[data-coaches="${emuType === '12' ? '16' : '12'}"]`
+  checkIfDataExists(selectedDate, emuTypeWithUsage).then((exists) => {
+    if (exists && currentCoach === 1) {
+      const confirmOverwrite = confirm(
+        "Data already exists for the selected date and EMU type. Do you want to overwrite?"
       );
-      if (nextButton && !nextButton.disabled) {
-        nextButton.classList.add('active');
-        nextButton.disabled = false; // Ensure the next button is enabled
-        maxCoaches = parseInt(nextButton.dataset.coaches); // Update the max coaches
+      if (!confirmOverwrite) {
+        return;
       }
-  
-      // Reset for the next set of coaches
-      currentCoach = 1;
+    }
+
+    const coachDataEntry = {
+      coach: currentCoach,
+      a: document.getElementById("a").value,
+      b: document.getElementById("b").value,
+      c: document.getElementById("c").value,
+      d: document.getElementById("d").value,
+      e: document.getElementById("e").value,
+      f: document.getElementById("f").value,
+      g: document.getElementById("g").value,
+      h: document.getElementById("h").value,
+      i: document.getElementById("i").value,
+      j: document.getElementById("j").value,
+      k: document.getElementById("k").value,
+      l: document.getElementById("l").value,
+    };
+
+    coachData.push(coachDataEntry);
+
+    if (currentCoach < maxCoaches) {
+      currentCoach++;
       updateCoachNumber();
       clearCoachForm();
-      coachData = [];
-  
-      // Check if both 12-coach and 16-coach buttons are disabled
-      const allDisabled = Array.from(emuTypeButtons).every((btn) => btn.disabled);
-      if (allDisabled) {
-        alert('All data submitted! Redirecting...');
-        window.location.href = 'index.html'; // Redirect to index.html
-      }
-    })
-    .catch((error) => {
-      alert('Error saving data: ' + error.message);
-    });
-  
-  }
+    } else {
+      showUploadAnimation();
+      saveCoachDataToFirebase(coachData, emuTypeWithUsage, selectedDate, customCoachUsage)
+        .then(() => {
+          alert("Data successfully submitted!");
+          hideUploadAnimation();
+          resetFormAfterUpload();
+        })
+        .catch((error) => {
+          alert("Error saving data: " + error.message);
+          hideUploadAnimation();
+        });
+    }
+  });
 }
 
+// Reset form after upload
+function resetFormAfterUpload() {
+  const activeButton = document.querySelector(".emu-type-btn.active");
+  if (activeButton) {
+    activeButton.disabled = true;
+    activeButton.classList.remove("active");
+  }
 
-
+  currentCoach = 1;
+  updateCoachNumber();
+  clearCoachForm();
+  coachData = [];
+}
 
 // Handle the next/submit button click
 nextBtn.addEventListener('click', saveAndNextCoach);
