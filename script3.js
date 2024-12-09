@@ -1,4 +1,4 @@
-const firebaseConfig = {
+const firebaseConfig = { 
     apiKey: "AIzaSyB-Euqpq0HC0IebmfcRmVJz4gTYGlcowYg",
     authDomain: "memo-shade.firebaseapp.com",
     databaseURL: "https://memo-shade-default-rtdb.firebaseio.com",
@@ -6,8 +6,7 @@ const firebaseConfig = {
     storageBucket: "memo-shade.appspot.com",
     messagingSenderId: "970376470206",
     appId: "1:970376470206:web:b91f57037cebc7e83bc8ef",
-  };
-
+};
 
 firebase.initializeApp(firebaseConfig);
 const database = firebase.database();
@@ -16,15 +15,13 @@ const database = firebase.database();
 const startDatePicker = document.getElementById('startDate');
 const endDatePicker = document.getElementById('endDate');
 const submitBtn = document.getElementById('submitBtn');
-const tableContainer = document.getElementById('tableContainer');
 const serviceTableBody = document.querySelector('#serviceTable tbody');
 const noDataMessage = document.getElementById('noDataMessage');
 const pdfDownloadContainer = document.getElementById('pdfDownloadContainer');
 const downloadPdfBtn = document.getElementById('downloadPdfBtn');
 
+hideSpinner()
 
-
-// Submit Button Event
 submitBtn.addEventListener('click', () => {
     const startDate = startDatePicker.value;
     const endDate = endDatePicker.value;
@@ -37,39 +34,30 @@ submitBtn.addEventListener('click', () => {
     fetchData(startDate, endDate);
 });
 
-
 function showSpinner() {
     const spinner = document.getElementById("spinnerContainer");
-    spinner.style.display = "flex"; // Make spinner visible
-  }
-  
-  // Hide Spinner
-  function hideSpinner() {
-    const spinner = document.getElementById("spinnerContainer");
-    spinner.style="display:none !important" // Hide spinner
-    console.log(spinner)
+    spinner.style.display = "flex";
+}
 
-  }
-  window.onload = () => {
-    hideSpinner();
-  };
+function hideSpinner() {
+    const spinner = document.getElementById("spinnerContainer");
+    spinner.style = "display:none !important";
+}
 
 // Fetch Data from Firebase
 function fetchData(startDate, endDate) {
     showSpinner();
     const path = `/train-monitoring`;
-    const formattedStartDate = startDate;
-    const formattedEndDate = endDate;
 
-    database.ref(path).orderByKey().startAt(formattedStartDate).endAt(formattedEndDate)
+    database.ref(path)
+        .orderByKey().startAt(startDate).endAt(endDate)
         .once("value", snapshot => {
             if (snapshot.exists()) {
                 const data = snapshot.val();
                 processData(data);
             } else {
                 showNoDataMessage();
-            hideSpinner();
-
+                hideSpinner();
             }
         })
         .catch(error => {
@@ -77,43 +65,52 @@ function fetchData(startDate, endDate) {
         });
 }
 
-// Process Data and Populate Table
 function processData(data) {
     hideSpinner();
 
     const totals = {
-        "Brake Ringing": 0,
-        "Blue Coat": 0,
-        "Dash Pot": 0,
-        "Fan": 0,
-        "Tubelight": 0,
-        "Switch": 0,
-        "Blowing": 0,
-        "Seat": 0,
-        "Insulator": 0,
-        "Draining": 0,
-        "Battery": 0
+        IA: 0,
+        IC: 0,
+        IC0: 0,
+        TI: 0,
+        services: {
+            "Brake Ringing": 0,
+            "Blue Coat": 0,
+            "Dash Pot": 0,
+            "Fan": 0,
+            "Tubelight": 0,
+            "Switch": 0,
+            "Blowing": 0,
+            "Seat": 0,
+            "Insulator": 0,
+            "Draining": 0,
+            "Battery": 0
+        }
     };
 
     Object.keys(data).forEach(dateKey => {
         const dateData = data[dateKey];
-        
-        // Add up all the work done in each category
+
         Object.keys(dateData).forEach(trainType => {
             const trainData = dateData[trainType];
 
             trainData.forEach(coach => {
-                totals["Brake Ringing"] += parseInt(coach.b) || 0;
-                totals["Blue Coat"] += parseInt(coach.c) || 0;
-                totals["Dash Pot"] += parseInt(coach.d) || 0;
-                totals["Fan"] += parseInt(coach.e) || 0;
-                totals["Tubelight"] += parseInt(coach.f) || 0;
-                totals["Switch"] += parseInt(coach.g) || 0;
-                totals["Blowing"] += parseInt(coach.h) || 0;
-                totals["Seat"] += parseInt(coach.i) || 0;
-                totals["Insulator"] += parseInt(coach.j) || 0;
-                totals["Draining"] += parseInt(coach.k) || 0;
-                totals["Battery"] += parseInt(coach.l) || 0;
+                totals.IA += parseInt(coach.IA) || 0;
+                totals.IC += parseInt(coach.IC) || 0;
+                totals.IC0 += parseInt(coach.IC0) || 0;
+                totals.TI += parseInt(coach.TI) || 0;
+
+                totals.services["Brake Ringing"] += parseInt(coach.b) || 0;
+                totals.services["Blue Coat"] += parseInt(coach.c) || 0;
+                totals.services["Dash Pot"] += parseInt(coach.d) || 0;
+                totals.services["Fan"] += parseInt(coach.e) || 0;
+                totals.services["Tubelight"] += parseInt(coach.f) || 0;
+                totals.services["Switch"] += parseInt(coach.g) || 0;
+                totals.services["Blowing"] += parseInt(coach.h) || 0;
+                totals.services["Seat"] += parseInt(coach.i) || 0;
+                totals.services["Insulator"] += parseInt(coach.j) || 0;
+                totals.services["Draining"] += parseInt(coach.k) || 0;
+                totals.services["Battery"] += parseInt(coach.l) || 0;
             });
         });
     });
@@ -121,64 +118,66 @@ function processData(data) {
     updateTable(totals);
 }
 
-// Update the Table
+// Update the Table Dynamically
 function updateTable(totals) {
+    var hex = document.querySelector("#tableContainer");
+    hex.style.display="block";
     serviceTableBody.innerHTML = "";
 
-    const serviceCategories = [
-        "Brake Ringing", "Blue Coat", "Dash Pot", "Fan", "Tubelight",
-        "Switch", "Blowing", "Seat", "Insulator", "Draining", "Battery"
-    ];
+    const serviceCategories = Object.keys(totals.services);
 
+    // Existing Service Categories
     serviceCategories.forEach(service => {
         const row = document.createElement("tr");
         row.innerHTML = `
             <td>${service}</td>
-            <td>${totals[service]}</td>
+            <td>${totals.services[service]}</td>
+        `;
+        serviceTableBody.appendChild(row);
+    console.log(serviceTableBody)
+
+    });
+
+    // Adding new rows for IA, IC, IC0, TI
+    const sections = ["IA", "IC", "IC0", "TI"];
+    sections.forEach(section => {
+        const row = document.createElement("tr");
+        row.innerHTML = `
+            <td><strong>${section}</strong></td>
+            <td>${totals[section]}</td>
         `;
         serviceTableBody.appendChild(row);
     });
 
-    tableContainer.style.display = 'block';
-    noDataMessage.style.display = 'none';
     pdfDownloadContainer.style.display = 'block';
 }
 
-// Show No Data Message
+// No Data Handling
 function showNoDataMessage() {
-    tableContainer.style.display = 'none';
     noDataMessage.style.display = 'block';
 }
 
-// Download PDF Button Event
-// Download PDF Button Event
 downloadPdfBtn.addEventListener('click', () => {
-    const { jsPDF } = window.jspdf;  // Correct way to access jsPDF
-
-    // Create a new PDF instance
+    const { jsPDF } = window.jspdf;
     const doc = new jsPDF();
 
-    // Title Page
     doc.setFontSize(18);
     doc.text("Memo Shed Jhajha", 105, 20, { align: "center" });
 
-    // Date Range
     const startDate = startDatePicker.value;
     const endDate = endDatePicker.value;
     doc.setFontSize(12);
     doc.text(`Date Range: ${startDate} - ${endDate}`, 105, 30, { align: "center" });
 
-    // Table
     doc.autoTable({
-        html: '#serviceTable',
+        html: "#serviceTable",
         startY: 40,
-        theme: 'grid',
+        theme: "striped",
         headStyles: {
             fillColor: [0, 51, 102],
-            textColor: [255, 255, 255]
-        }
+            textColor: [255, 255, 255],
+          },
     });
 
-    // Save PDF
-    doc.save(`${startDate}_to_${endDate}_Memo_Shed_Report.pdf`);
+    doc.save(`${startDate}_${endDate}_Memo_Shed_Report.pdf`);
 });

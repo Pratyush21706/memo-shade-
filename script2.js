@@ -12,7 +12,9 @@ const firebaseConfig = {
 // Initialize Firebase
 firebase.initializeApp(firebaseConfig);
 const database = firebase.database();
-var xyz;var  deleteBtn;
+var xyz;
+var deleteBtn;
+
 // DOM Elements
 const datePicker = document.getElementById("datePicker");
 const fetchDataBtn = document.getElementById("fetchDataBtn");
@@ -76,12 +78,175 @@ function populateTables(data, date) {
   trainTables.innerHTML = "";
 
   Object.keys(data).forEach((trainType) => {
-    xyz= trainType
-    createTable(trainType.slice(0, 2), data[trainType], date);
+    xyz = trainType;
+
+    if (trainType.includes("Mechanical") || trainType.includes("Electrical") || trainType.includes("Neumonics")) {
+      createSpecialTable(trainType, data[trainType], date);
+    } else {
+      createTable(trainType.slice(0, 2), data[trainType], date);
+    }
   });
 
   tablesContainer.classList.remove("hidden");
   noDataMessage.classList.add("hidden");
+}
+
+function createSpecialTable(trainType, trainData, date) {
+  const sanitizedTrainType = trainType.replace(/[^a-zA-Z0-9]/g, "");
+  const tableId = `table${sanitizedTrainType}`;
+
+  const tableDiv = document.createElement("div");
+  tableDiv.innerHTML = `
+    <center>
+      <h2 class="text-heading-table">
+        ${trainType.slice(0, 14)} Coaches Data
+        <button class="btn btn-danger btn-sm delete-table-btn" style="margin-left: 10px;">
+          Delete
+        </button>
+      </h2>
+    </center>
+    <p class="hidden-date" style="display:none">${date}</p>
+    <div class="table-container" style="overflow-x: auto;">
+      <table id="${tableId}" class="table table-striped table-hover align-middle text-center">
+        <thead>
+          <tr>
+            <th>S. No.</th>
+            <th>MC Number</th>
+            <th>IA</th>
+            <th>IC</th>
+            <th>IC0</th>
+            <th>TI</th>
+            <th>Other Input</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody></tbody>
+      </table>
+    </div>
+  `;
+
+  trainTables.appendChild(tableDiv);
+
+  const tbody = tableDiv.querySelector("tbody");
+  const totals = {
+    IA: 0,
+    IC: 0,
+    IC0: 0,
+    TI: 0,
+  };
+
+  trainData.forEach((coach, index) => {
+    const row = document.createElement("tr");
+    row.innerHTML = `
+      <td>${index + 1}</td>
+      <td contenteditable="false" class="editable">${coach.mcNumber || ""}</td>
+      <td contenteditable="false" class="editable">${coach.IA || 0}</td>
+      <td contenteditable="false" class="editable">${coach.IC || 0}</td>
+      <td contenteditable="false" class="editable">${coach.IC0 || 0}</td>
+      <td contenteditable="false" class="editable">${coach.TI || 0}</td>
+      <td contenteditable="false" class="editable">${coach.otherInput || ""}</td>
+      <td>
+        <button class="btn btn-warning btn-sm edit-btn">Edit</button>
+        <button class="btn btn-success btn-sm submit-btn" style="display: none;">Submit</button>
+      </td>
+    `;
+
+    tbody.appendChild(row);
+
+    // Update totals
+    totals.IA += parseInt(coach.IA) || 0;
+    totals.IC += parseInt(coach.IC) || 0;
+    totals.IC0 += parseInt(coach.IC0) || 0;
+    totals.TI += parseInt(coach.TI) || 0;
+
+    const editBtn = row.querySelector(".edit-btn");
+    const submitBtn = row.querySelector(".submit-btn");
+
+    editBtn.addEventListener("click", () => {
+      row.querySelectorAll(".editable").forEach((cell) => {
+        cell.contentEditable = "true";
+        cell.style.backgroundColor = "#fff7e6";
+      });
+      editBtn.style.display = "none";
+      submitBtn.style.display = "inline-block";
+    });
+
+    submitBtn.addEventListener("click", () => {
+      const updatedData = {
+        mcNumber: row.querySelectorAll(".editable")[0].textContent.trim(),
+        IA: row.querySelectorAll(".editable")[1].textContent.trim(),
+        IC: row.querySelectorAll(".editable")[2].textContent.trim(),
+        IC0: row.querySelectorAll(".editable")[3].textContent.trim(),
+        TI: row.querySelectorAll(".editable")[4].textContent.trim(),
+        otherInput: row.querySelectorAll(".editable")[5].textContent.trim(),
+      };
+
+      database.ref(`/train-monitoring/${date}/${trainType}/${index}`).set(updatedData)
+        .then(() => {
+          alert("Data updated successfully.");
+          editBtn.style.display = "inline-block";
+          submitBtn.style.display = "none";
+          row.querySelectorAll(".editable").forEach(cell => cell.contentEditable = "false");
+          row.querySelectorAll(".editable").forEach(cell => cell.style.backgroundColor = "");
+        })
+        .catch((error) => {
+          console.error("Error updating data:", error);
+          alert("Failed to update data. Please try again.");
+        });
+
+       
+  
+    });
+  });
+
+  const totalsRow = document.createElement("tr");
+  totalsRow.innerHTML = `
+    <td colspan="2"><strong>Totals</strong></td>
+    <td><strong>${totals.IA}</strong></td>
+    <td><strong>${totals.IC}</strong></td>
+    <td><strong>${totals.IC0}</strong></td>
+    <td><strong>${totals.TI}</strong></td>
+    <td></td>
+    <td></td><br>
+  `;
+  tbody.appendChild(totalsRow);
+
+  deleteBtn = tableDiv.querySelector(".delete-table-btn");  
+  console.log(xyz)
+deleteBtn.addEventListener("click", () => {
+// Set the train type name in the modal
+document.getElementById("trainTypeName").textContent = trainType;
+console.log("eh")
+// Show the modal
+const deleteModal = new bootstrap.Modal(document.getElementById("deleteConfirmModal"));
+deleteModal.show();
+
+// Handle the confirm delete button click
+const confirmDeleteBtn = document.getElementById("confirmDeleteBtn");
+const onConfirmDelete = () => {
+// Remove data from Firebase
+database
+  .ref(`/train-monitoring/${date}/${trainType}`)
+  .remove()
+  .then(() => {
+    alert(`${trainType} successfully deleted.`);
+    // Remove from DOM
+    trainTables.removeChild(tableDiv);
+  })
+  .catch((error) => {
+    console.error("Error deleting data:", error);
+    alert("Failed to delete data. Please try again.");
+  })
+  .finally(() => {
+    deleteModal.hide(); // Hide the modal after the operation
+  });
+
+// Remove the event listener to avoid duplicate bindings
+confirmDeleteBtn.removeEventListener("click", onConfirmDelete);
+};
+
+confirmDeleteBtn.addEventListener("click", onConfirmDelete);
+});
 }
 
 function createTable(trainType, trainData, date) {
@@ -348,20 +513,20 @@ function displayNoDataMessage() {
       const heading = tableDiv.querySelector("h2").textContent;
       const date = tableDiv.querySelector("p").textContent;
   
-      // Clone table and remove "Actions" and "Delete" button for the PDF
-      const cloneTable = table.cloneNode(true);
+     // Clone table and remove "Actions" and "Delete" button for the PDF
+     const cloneTable = table.cloneNode(true);
   
-      // Remove "Actions" column
-      Array.from(cloneTable.rows).forEach((row) => {
-        const actionCellIndex = Array.from(row.cells).findIndex(
-          (cell) => cell.textContent.trim() === "Actions"
-        );
-      
-        // Only delete the column if it exists in this row
-        if (actionCellIndex !== -1) {
-          row.deleteCell(actionCellIndex);
-        }
-      });
+     // Remove "Actions" column
+     Array.from(cloneTable.rows).forEach((row) => {
+       const actionCellIndex = Array.from(row.cells).findIndex(
+         (cell) => cell.textContent.trim() === "Actions"
+       );
+     
+       // Only delete the column if it exists in this row
+       if (actionCellIndex !== -1) {
+         row.deleteCell(actionCellIndex);
+       }
+     });
       
   
      // Hide button from the PDF
@@ -370,8 +535,8 @@ function displayNoDataMessage() {
   
       // Add table heading and date
       doc.setFontSize(14);
-      doc.text(heading, 130, 25, { align: "center" });
-      doc.text(date, 150, 25, { align: "center" });
+      doc.text(heading, 135, 24, { align: "center" });
+      doc.text(date, 140, 38, { align: "center" });
   
       // Add the table to the PDF
       doc.autoTable({
@@ -390,4 +555,3 @@ function displayNoDataMessage() {
     const formattedDate = today.toDateString();
     doc.save(`${datePicker.value}_Working_Report.pdf`);
   });
-  

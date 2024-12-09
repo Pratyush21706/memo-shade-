@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Memo Shade Jhajha</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css">
+  <link rel="stylesheet" href="style1.css">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@700&display=swap" rel="stylesheet">
+
+  <!-- Add the Firebase SDK -->
+  <!-- Add the Firebase SDK -->
+<script src="https://www.gstatic.com/firebasejs/9.21.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.21.0/firebase-database-compat.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+
+</head>
+<body>
+
+
+  
+  <div class="container">
+    <nav class="navbar navbar-dark ">
+      <div class="container-fluid">
+        <a class="navbar-brand" href="index.html">
+          <img src="https://static.cdnlogo.com/logos/i/9/indian-railways.svg" width="90" height="50" alt="">
+        </a>
+        <span class="navbar-brand mb-0  mx-auto" style="margin-left: 200px;">Memu Shed Jhajha</span>
+      </div>
+    </nav>
+    <br><br><br><br>
+    <div class="date-section d-flex justify-content-between align-items-center">
+      <label for="date-picker">Select Date:</label>
+      <input type="date" id="date-picker" class="form-control" />
+    </div>
+    
+    <div class="emu-type-buttons d-flex justify-content-center mt-3">
+      <button class="emu-type-btn me-2" data-coaches="12">12 Coaches</button>
+      <button class="emu-type-btn me-2" data-coaches="16">16 Coaches</button>
+      <button class="emu-type-btn-custom btn btn-warning" id="custom-coaches-btn">
+        Custom Coaches
+      </button>
+    </div>
+    <div id="upload-animation" class="d-none text-center">
+      <div class="spinner-border text-primary" role="status">
+        <span class="visually-hidden">Uploading...</span>
+      </div>
+      <p>Uploading data, please wait...</p>
+    </div>
+        
+    <br>
+    <div class="form-section">
+      <h5 class="mb-3"><span id="bitch">Enter Details</span> <span id="coach-number">(1/3)</span></h5>
+      <br>
+      <form class="coach-form row">
+        <div class="form-floating mb-3">
+            <input type="text" class="form-control" id="mcNumber" placeholder="Enter MC Number">
+            <label for="mcNumber">MC Number</label>
+        </div>
+        <div class="d-flex gap-2 mb-3">
+            <button type="button" class="btn btn-outline-secondary">IA</button>
+            <button type="button" class="btn btn-outline-secondary">IC</button>
+            <button type="button" class="btn btn-outline-secondary">ICO</button>
+            <button type="button" class="btn btn-outline-secondary">TI</button>
+        </div>
+        <div class="form-floating mb-3">
+            <input type="text" class="form-control" id="otherInput" placeholder="Enter other details">
+            <label for="otherInput">Other Input</label>
+        </div>
+        
+      </form>
+    </div>
+    <button class="next-btn btn btn-primary w-100 rounded-0">Next Coach</button>
+    <div id="firebase-feedback"></div>
+  </div>
+  <script type ="module" src="script4.js"></script>
+  <script type="module" src="backend.js"> </script>
+  <style>
+    .navbar {
+      font-family: 'Roboto', sans-serif; /* Use Roboto font */
+      font-weight: bold;                /* Make the text bold */
+      border-bottom-left-radius: 10px;  /* Rounded bottom-left corner */
+      border-bottom-right-radius: 10px; /* Rounded bottom-right corner */
+    padding-bottom: 20px;
+    padding-top: 20px;
+    background-color: #003f69;
+    color: rgb(180, 180, 0);
+    width: 140%;
+  
+    position: fixed;
+    z-index: 1;
+    width: 100%;
+    left: 0;
+    top: 0;
+    }
+  </style>
+</body>
+</html>
