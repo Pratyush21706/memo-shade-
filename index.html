@@ -11,17 +11,18 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 </head>
 <body>
-  
+  <div class="xex" style="display: none;"><center><h1>App is Mobile Only</h1><br> <p>If you still want to proceed <span style="color:blue" onclick="hidefun()">Click here</span></p></center></div>
   
         <nav class="navbar navbar-expand-lg bg-body-tertiary">
           <div class="container-fluid pr-0 pl-0">
             <a class="navbar-brand" href="#" style="flex: 1">
               <img src="logo-f.png" alt="logo" loading="lazy" width="40"/>
+              
               <img
                 src="logo-m.png"
                 alt="dummy"
                 style="width: 75VW; margin-left: 30px;"
-                
+                class="mera"
               />
 
             </a>
@@ -104,7 +105,30 @@
     body{
       background-color: #0379c750;
     }
+
+    @media screen and (min-width: 992px) {
+      .mera{
+        width: 20vw !important;
+        margin-left: 35vw !important;
+      }
+
+      .xex{
+        display: flex !important;
+        align-items: center;
+        justify-content: center;
+        position: fixed;
+        top: 0;
+        left: 0;
+        z-index: 6;
+        background-color: #ffffff;
+        height: 100vh;
+        width: 100%;
+        
+      }
+    }
   </style>
   
+<script> 
+</script>
 </body>
 </html>

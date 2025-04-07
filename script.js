@@ -18,7 +18,11 @@ function updateGreeting() {
 
 const carouselItems = document.querySelectorAll('.carousel-item');
 const carouselIndicators = document.querySelectorAll('.carousel-indicator');
-
+function hidefun(){
+  var mux= document.querySelector(".xex");
+  mux.style ="display:none !important;";
+  console.log(mux.display)
+}
 
 let currentIndex = 0;
 
